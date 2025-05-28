@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Social Linktree</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: #f7f7f7;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            margin-top: 60px;
+            padding: 32px 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            object-fit: cover;
+            background: #eee;
+        }
+        h1 {
+            margin: 0 0 24px 0;
+            font-size: 1.6rem;
+            color: #222;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #fff;
+            transition: background 0.2s;
+        }
+        .link-instagram { background: #E1306C; }
+        .link-tiktok { background: #010101; }
+        .link-snapchat { background: #FFFC00; color: #000; }
+        .link-twitch { background: #9147FF; }
+        .link-btn:hover { opacity: 0.85; }
+        .fa-instagram { color: #fff; }
+        .fa-tiktok { color: #fff; }
+        .fa-snapchat-ghost { color: #000; }
+        .fa-twitch { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://placehold.co/96x96" alt="Your Avatar" class="avatar">
+        <h1>Your Name</h1>
+        <div class="links">
+            <a class="link-btn link-instagram" href="https://instagram.com/skyfoxofficial3994" target="_blank">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a class="link-btn link-tiktok" href="https://tiktok.com/@skyfoxofficial3994" target="_blank">
+                <i class="fab fa-tiktok"></i> TikTok
+            </a>
+            <a class="link-btn link-snapchat" href="https://snapchat.com/add/yourusername" target="_blank">
+                <i class="fab fa-snapchat-ghost"></i> Snapchat
+            </a>
+            <a class="link-btn link-twitch" href="https://twitch.tv/yourusername" target="_blank">
+                <i class="fab fa-twitch"></i> Twitch
+            </a>
+        </div>
+    </div>
+</body>
+</html>
