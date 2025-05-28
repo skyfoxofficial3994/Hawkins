@@ -1,248 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>lilyfirefox Social Linktree</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #f7b42c 0%, #fc575e 100%);
-            font-family: 'Montserrat', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            transition: background 0.5s, color 0.3s;
-        }
-
-        .dark-mode {
-            background: linear-gradient(135deg, #232526 0%, #414345 100%);
-            color: #e0e0e0;
-        }
-
-        .container {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(8px);
-            transition: background 0.5s, color 0.3s;
-            margin-top: 60px;
-            padding: 40px 28px 32px 28px;
-            border-radius: 24px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 1.5px 8px rgba(252,87,94,0.08);
-            width: 100%;
-            max-width: 370px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dark-mode .container {
-            background: rgba(30,30,30,0.92);
-        }
-
-        .avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            margin-bottom: 18px;
-            object-fit: cover;
-            border: 4px solid #fc575e;
-            box-shadow: 0 4px 24px rgba(252,87,94,0.18);
-            background: #eee;
-            transition: border 0.3s;
-        }
-
-        .dark-mode .avatar {
-            border: 4px solid #f7b42c;
-        }
-
-        h1 {
-            margin: 0 0 26px 0;
-            font-size: 2.1rem;
-            font-family: 'Pacifico', cursive;
-            color: #fc575e;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(252,87,94,0.08);
-        }
-
-        .dark-mode h1 {
-            color: #f7b42c;
-            text-shadow: 0 2px 8px rgba(247,180,44,0.12);
-        }
-
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            margin-bottom: 18px;
-        }
-
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            padding: 14px 0;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.15rem;
-            font-weight: 600;
-            text-decoration: none;
-            color: #fff;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(90deg, #fc575e 0%, #f7b42c 100%);
-            transition: transform 0.18s, box-shadow 0.18s, background 0.3s;
-            cursor: pointer;
-        }
-
-        .link-btn::before {
-            content: '';
-            position: absolute;
-            left: -60%;
-            top: 0;
-            width: 60%;
-            height: 100%;
-            background: rgba(255,255,255,0.12);
-            transform: skewX(-20deg);
-            transition: left 0.4s;
-            z-index: 0;
-        }
-
-        .link-btn:hover {
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 6px 24px rgba(252,87,94,0.18);
-        }
-
-        .link-btn:hover::before {
-            left: 100%;
-        }
-
-        .link-instagram { background: linear-gradient(90deg, #fd5949 0%, #d6249f 60%, #285AEB 100%); }
-        .link-tiktok { background: linear-gradient(90deg, #010101 0%, #25F4EE 100%); }
-        .link-snapchat { background: linear-gradient(90deg, #FFFC00 0%, #FFD600 100%); color: #000; }
-        .link-twitch { background: linear-gradient(90deg, #9147FF 0%, #6441A5 100%); }
-        .link-discord { background: linear-gradient(90deg, #5865F2 0%, #404eed 100%); }
-
-        .fa-instagram { color: #fff; font-size: 1.4em; }
-        .fa-tiktok { color: #fff; font-size: 1.4em; }
-        .fa-snapchat-ghost { color: #000; font-size: 1.4em; }
-        .fa-twitch { color: #fff; font-size: 1.4em; }
-        .fa-discord { color: #fff; font-size: 1.4em; }
-
-        .toggle-darkmode {
-            margin-top: 22px;
-            padding: 12px 28px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(90deg, #232526 0%, #fc575e 100%);
-            color: #fff;
-            cursor: pointer;
-            font-size: 1.08rem;
-            font-weight: 600;
-            box-shadow: 0 2px 10px rgba(252,87,94,0.10);
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .toggle-darkmode:hover {
-            background: linear-gradient(90deg, #fc575e 0%, #f7b42c 100%);
-            color: #232526;
-        }
-
-        .dark-mode .toggle-darkmode {
-            background: linear-gradient(90deg, #f7b42c 0%, #232526 100%);
-            color: #232526;
-        }
-
-        .dark-mode .toggle-darkmode:hover {
-            background: linear-gradient(90deg, #232526 0%, #fc575e 100%);
-            color: #fff;
-        }
-
-        /* Animated floating shapes */
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.18;
-            z-index: 0;
-            pointer-events: none;
-            animation: float 8s ease-in-out infinite alternate;
-        }
-        .shape1 {
-            width: 120px; height: 120px; background: #fc575e;
-            top: -40px; left: -40px;
-            animation-delay: 0s;
-        }
-        .shape2 {
-            width: 80px; height: 80px; background: #f7b42c;
-            bottom: -30px; right: -30px;
-            animation-delay: 2s;
-        }
-        .shape3 {
-            width: 60px; height: 60px; background: #9147FF;
-            top: 30px; right: -20px;
-            animation-delay: 4s;
-        }
-        @keyframes float {
-            0% { transform: translateY(0) scale(1);}
-            100% { transform: translateY(20px) scale(1.08);}
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 24px 6px 18px 6px;
-                max-width: 98vw;
-            }
-            .avatar {
-                width: 80px; height: 80px;
-            }
-            h1 {
-                font-size: 1.3rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Linktree Admin</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(115deg, #f7b42c, #fc575e);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: white;
+  }
+  .container {
+    background: rgba(255 255 255 / 0.15);
+    padding: 20px;
+    border-radius: 12px;
+    width: 350px;
+    margin: 10px 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  input[type="text"], input[type="url"] {
+    width: calc(100% - 10px);
+    padding: 6px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border: none;
+  }
+  button {
+    background: #fc575e;
+    border: none;
+    padding: 10px 14px;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  button:hover {
+    background: #f7b42c;
+    color: black;
+  }
+  .link-row {
+    background: rgba(255 255 255 / 0.3);
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .link-row input {
+    flex-grow: 1;
+  }
+  .remove-btn {
+    background: #ff4c4c;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .remove-btn:hover {
+    background: #d43535;
+  }
+  a.link-btn {
+    display: block;
+    background: linear-gradient(90deg, #fc575e, #f7b42c);
+    padding: 12px;
+    border-radius: 16px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 6px 0;
+  }
+  a.link-btn i {
+    margin-right: 8px;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <span class="shape shape1"></span>
-        <span class="shape shape2"></span>
-        <span class="shape shape3"></span>
-        <img src="https://i.imgur.com/qfjJA5P.png" alt="Your Avatar" class="avatar">
-        <h1>lilyfirefox-SocialMedia</h1>
-        <div class="links">
-            <a class="link-btn link-instagram" href="https://instagram.com/skyfoxofficial3994" target="_blank">
-                <i class="fab fa-instagram"></i> Instagram
-            </a>
-            <a class="link-btn link-tiktok" href="https://tiktok.com/@skyfoxofficial3994" target="_blank">
-                <i class="fab fa-tiktok"></i> TikTok
-            </a>
-            <a class="link-btn link-snapchat" href="https://snapchat.com/add/mhawkins2321" target="_blank">
-                <i class="fab fa-snapchat-ghost"></i> Snapchat
-            </a>
-            <a class="link-btn link-twitch" href="https://www.twitch.tv/lilyfoxfire" target="_blank">
-                <i class="fab fa-twitch"></i> Twitch
-            </a>
-            <a class="link-btn link-discord" href="https://discord.gg/b2Zxbeu4Hc" target="_blank">
-                <i class="fab fa-discord"></i> Discord Server
-            </a>
-        </div>
-        <button class="toggle-darkmode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-    </div>
 
-    <script>
-        // Save dark mode preference
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
-        // Load dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
+  <!-- Display -->
+  <div class="container" id="main-container">
+    <img id="avatar" src="" alt="Avatar" style="width:100px; border-radius:50%; margin-bottom: 12px; border: 3px solid #fff;">
+    <h2 id="displayName"></h2>
+    <div id="links-container"></div>
+  </div>
+
+  <!-- Admin Login -->
+  <div class="container" id="admin-login">
+    <h3>Admin Login</h3>
+    <input type="password" id="passwordInput" placeholder="Enter password" />
+    <button onclick="checkPassword()">Login</button>
+    <p id="loginStatus" style="color:#ffcccc;"></p>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="container" id="admin-panel" style="display:none;">
+    <h3>Edit Profile</h3>
+    <label>Name:</label>
+    <input type="text" id="adminName" /><br>
+    <label>Avatar URL:</label>
+    <input type="url" id="adminAvatar" /><br>
+
+    <h3>Links</h3>
+    <div id="links-editor"></div>
+    <button onclick="addLink()">+ Add Link</button><br>
+    <button onclick="saveSettings()">Save Changes</button>
+  </div>
+
+<script>
+  const ADMIN_PASSWORD = "Flash230421#";
+
+  const defaultSettings = {
+    name: "lilyfirefox Socials",
+    avatar: "https://i.imgur.com/qfjJA5P.png",
+    links: [
+      { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
+      { label: "TikTok", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
+      { label: "Snapchat", url: "https://snapchat.com/add/mhawkins2321", icon: "fab fa-snapchat-ghost" },
+      { label: "Twitch", url: "https://www.twitch.tv/lilyfoxfire", icon: "fab fa-twitch" },
+      { label: "Discord", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
+    ]
+  };
+
+  function loadSettings() {
+    const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
+
+    document.getElementById("avatar").src = settings.avatar;
+    document.getElementById("displayName").textContent = settings.name;
+
+    const linksContainer = document.getElementById("links-container");
+    linksContainer.innerHTML = settings.links.map(link =>
+      `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i>${link.label}</a>`
+    ).join("");
+
+    // Fill admin inputs
+    document.getElementById("adminName").value = settings.name;
+    document.getElementById("adminAvatar").value = settings.avatar;
+
+    // Render link editor rows
+    const editor = document.getElementById("links-editor");
+    editor.innerHTML = "";
+    settings.links.forEach((link, i) => {
+      const row = document.createElement("div");
+      row.className = "link-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Label" value="${link.label}" data-index="${i}" class="label" />
+        <input type="url" placeholder="URL" value="${link.url}" data-index="${i}" class="url" />
+        <input type="text" placeholder="Icon class" value="${link.icon}" data-index="${i}" class="icon" />
+        <button class="remove-btn" onclick="removeLink(${i})">x</button>
+      `;
+      editor.appendChild(row);
+    });
+  }
+
+  function addLink() {
+    const editor = document.getElementById("links-editor");
+    const index = editor.children.length;
+    const row = document.createElement("div");
+    row.className = "link-row";
+    row.innerHTML = `
+      <input type="text" placeholder="Label" data-index="${index}" class="label" />
+      <input type="url" placeholder="URL" data-index="${index}" class="url" />
+      <input type="text" placeholder="Icon class" data-index="${index}" class="icon" />
+      <button class="remove-btn" onclick="removeLink(${index})">x</button>
+    `;
+    editor.appendChild(row);
+  }
+
+  function removeLink(index) {
+    const editor = document.getElementById("links-editor");
+    if (editor.children[index]) {
+      editor.removeChild(editor.children[index]);
+      // Update indexes on remaining children
+      [...editor.children].forEach((child, i) => {
+        child.querySelectorAll("input").forEach(input => input.dataset.index = i);
+        child.querySelector("button").setAttribute("onclick", `removeLink(${i})`);
+      });
+    }
+  }
+
+  function saveSettings() {
+    const name = document.getElementById("adminName").value.trim();
+    const avatar = document.getElementById("adminAvatar").value.trim();
+    const editor = document.getElementById("links-editor");
+
+    const links = [];
+    for (let row of editor.children) {
+      const label = row.querySelector(".label").value.trim();
+      const url = row.querySelector(".url").value.trim();
+      const icon = row.querySelector(".icon").value.trim() || "fas fa-link";
+      if(label && url) {
+        links.push({ label, url, icon });
+      }
+    }
+
+    const settings = { name, avatar, links };
+    localStorage.setItem("socialSettings", JSON.stringify(settings));
+    loadSettings();
+    alert("Settings saved!");
+  }
+
+  function checkPassword() {
+    const pw = document.getElementById("passwordInput").value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById("admin-login").style.display = "none";
+      document.getElementById("admin-panel").style.display = "block";
+    } else {
+      document.getElementById("loginStatus").textContent = "Incorrect password.";
+    }
+  }
+
+  window.onload = loadSettings;
+</script>
+
 </body>
 </html>
