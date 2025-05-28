@@ -14,7 +14,14 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            transition: background 0.3s, color 0.3s;
         }
+
+        .dark-mode {
+            background: #121212;
+            color: #e0e0e0;
+        }
+
         .container {
             background: #fff;
             transition: background 0.3s, color 0.3s;
@@ -26,6 +33,11 @@
             max-width: 350px;
             text-align: center;
         }
+
+        .dark-mode .container {
+            background: #1e1e1e;
+        }
+
         .avatar {
             width: 96px;
             height: 96px;
@@ -34,16 +46,23 @@
             object-fit: cover;
             background: #eee;
         }
+
         h1 {
             margin: 0 0 24px 0;
             font-size: 1.6rem;
             color: #222;
         }
+
+        .dark-mode h1 {
+            color: #e0e0e0;
+        }
+
         .links {
             display: flex;
             flex-direction: column;
             gap: 18px;
         }
+
         .link-btn {
             display: flex;
             align-items: center;
@@ -58,15 +77,34 @@
             color: #fff;
             transition: background 0.2s;
         }
+
         .link-instagram { background: #E1306C; }
         .link-tiktok { background: #010101; }
         .link-snapchat { background: #FFFC00; color: #000; }
         .link-twitch { background: #9147FF; }
+
         .link-btn:hover { opacity: 0.85; }
+
         .fa-instagram { color: #fff; }
         .fa-tiktok { color: #fff; }
         .fa-snapchat-ghost { color: #000; }
         .fa-twitch { color: #fff; }
+
+        .toggle-darkmode {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .dark-mode .toggle-darkmode {
+            background: #ddd;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +125,64 @@
                 <i class="fab fa-twitch"></i> Twitch
             </a>
         </div>
+        <button class="toggle-darkmode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>
+<script>
+    // Check for dark mode preference in localStorage
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Toggle dark mode and save preference
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    }
+    // Add event listener to toggle button
+    document.querySelector('.toggle-darkmode').addEventListener('click', toggleDarkMode);
+    // Check for system preference on initial load
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'enabled');
+    }
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (e.matches) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+</script>
+<script>
+    // Check for dark mode preference in localStorage
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Toggle dark mode and save preference
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    }
+    // Add event listener to toggle button
+    document.querySelector('.toggle-darkmode').addEventListener('click', toggleDarkMode);
+    // Check for system preference on initial load              
