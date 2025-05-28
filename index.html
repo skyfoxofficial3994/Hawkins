@@ -16,6 +16,7 @@
     align-items: center;
     padding: 20px;
     color: white;
+    transition: background 0.5s, color 0.5s;
   }
   .container {
     background: rgba(255 255 255 / 0.15);
@@ -24,13 +25,15 @@
     width: 350px;
     margin: 10px 0;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    transition: background 0.5s, box-shadow 0.5s;
   }
-  input[type="text"], input[type="url"] {
+  input[type="text"], input[type="url"], input[type="password"] {
     width: calc(100% - 10px);
     padding: 6px;
     margin-bottom: 8px;
     border-radius: 6px;
     border: none;
+    transition: background-color 0.5s, color 0.5s;
   }
   button {
     background: #fc575e;
@@ -41,6 +44,7 @@
     border-radius: 8px;
     cursor: pointer;
     margin-top: 8px;
+    transition: background 0.5s, color 0.5s;
   }
   button:hover {
     background: #f7b42c;
@@ -54,6 +58,7 @@
     display: flex;
     gap: 6px;
     align-items: center;
+    transition: background 0.5s;
   }
   .link-row input {
     flex-grow: 1;
@@ -65,6 +70,7 @@
     padding: 4px 8px;
     border-radius: 6px;
     cursor: pointer;
+    transition: background 0.5s;
   }
   .remove-btn:hover {
     background: #d43535;
@@ -78,13 +84,73 @@
     text-decoration: none;
     font-weight: bold;
     margin: 6px 0;
+    transition: background 0.5s;
   }
   a.link-btn i {
     margin-right: 8px;
   }
+
+  /* Dark mode styles */
+  body.darkmode {
+    background: #121212;
+    color: #ddd;
+  }
+  body.darkmode .container {
+    background: rgba(40, 40, 40, 0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.7);
+  }
+  body.darkmode input[type="text"],
+  body.darkmode input[type="url"],
+  body.darkmode input[type="password"] {
+    background-color: #222;
+    color: #eee;
+  }
+  body.darkmode button {
+    background: #bb3750;
+    color: white;
+  }
+  body.darkmode button:hover {
+    background: #f7b42c;
+    color: black;
+  }
+  body.darkmode .link-row {
+    background: rgba(60, 60, 60, 0.6);
+  }
+  body.darkmode .remove-btn {
+    background: #d14343;
+  }
+  body.darkmode .remove-btn:hover {
+    background: #a12a2a;
+  }
+  body.darkmode a.link-btn {
+    background: linear-gradient(90deg, #bb3750, #f7b42c);
+    color: white;
+  }
+
+  /* Dark mode toggle button */
+  #darkmode-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #fc575e;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 1000;
+    transition: background 0.5s, color 0.5s;
+  }
+  #darkmode-toggle:hover {
+    background: #f7b42c;
+    color: black;
+  }
 </style>
 </head>
 <body>
+
+  <button id="darkmode-toggle">Dark Mode</button>
 
   <!-- Display -->
   <div class="container" id="main-container">
@@ -217,6 +283,27 @@
       document.getElementById("loginStatus").textContent = "Incorrect password.";
     }
   }
+
+  // Dark mode toggle logic
+  const darkModeToggle = document.getElementById("darkmode-toggle");
+
+  // Load dark mode preference from localStorage
+  const savedDarkMode = localStorage.getItem("darkMode");
+  if (savedDarkMode === "enabled") {
+    document.body.classList.add("darkmode");
+    darkModeToggle.textContent = "Light Mode";
+  }
+
+  darkModeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("darkmode");
+    if (document.body.classList.contains("darkmode")) {
+      darkModeToggle.textContent = "Light Mode";
+      localStorage.setItem("darkMode", "enabled");
+    } else {
+      darkModeToggle.textContent = "Dark Mode";
+      localStorage.setItem("darkMode", "disabled");
+    }
+  });
 
   window.onload = loadSettings;
 </script>
