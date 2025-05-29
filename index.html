@@ -1,10 +1,9 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Linktree - lilyfirefox</title>
+  <title>LilyFirefox | Social Links</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
@@ -16,71 +15,98 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       padding: 40px 20px;
       color: white;
     }
+
     .container {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
       border-radius: 20px;
-      padding: 24px;
+      padding: 32px 24px;
       width: 100%;
       max-width: 400px;
-      margin: 16px 0;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.25);
       text-align: center;
     }
+
     #avatar {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 4px solid white;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
+
+    h2 {
+      margin: 0 0 24px;
+      font-size: 24px;
+    }
+
     .link-btn {
       display: block;
       background: linear-gradient(90deg, #fc575e, #f7b42c);
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 16px;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 20px;
       color: white;
       text-decoration: none;
       font-weight: 600;
-      text-align: center;
-      transition: transform 0.3s ease;
+      font-size: 16px;
+      transition: transform 0.25s ease, background 0.25s ease;
     }
+
+    .link-btn i {
+      margin-right: 10px;
+    }
+
     .link-btn:hover {
       transform: scale(1.05);
+      background: linear-gradient(90deg, #f7b42c, #fc575e);
+    }
+
+    .admin-link {
+      margin-top: 24px;
+      font-size: 14px;
+      color: white;
+      opacity: 0.8;
+    }
+
+    .admin-link:hover {
+      text-decoration: underline;
+      opacity: 1;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <img id="avatar" src="" alt="Avatar">
-    <h2 id="displayName"></h2>
+    <h2 id="displayName">Loading...</h2>
     <div id="links-container"></div>
-    <a class="link-btn" href="admin.html"><i class="fas fa-user-cog"></i> Admin Panel</a>
+    <a class="admin-link" href="admin.html"><i class="fas fa-user-cog"></i> Admin Panel</a>
   </div>
+
   <script>
-    const settings = JSON.parse(localStorage.getItem("socialSettings")) || {
-      name: "lilyfirefox Socials",
-      avatar: "https://i.imgur.com/qfjJA5P.png",
-      links: [
-        { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
-        { label: "TikTok | SkyFox", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
-        { label: "TikTok | CottonCandy", url: "https://www.tiktok.com/@cottoncandy2421", icon: "fab fa-tiktok" },
-        { label: "YouTube", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
-        { label: "Snapchat", url: "https://snapchat.com/add/mhawkins2321", icon: "fab fa-snapchat-ghost" },
-        { label: "Twitch", url: "https://www.twitch.tv/lilyfoxfire", icon: "fab fa-twitch" },
-        { label: "Discord", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
-      ]
-    };
-    document.getElementById("avatar").src = settings.avatar;
-    document.getElementById("displayName").textContent = settings.name;
-    document.getElementById("links-container").innerHTML = settings.links.map(link =>
-      `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i> ${link.label}</a>`
-    ).join("");
+    async function loadData() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        document.getElementById("avatar").src = data.avatar || '';
+        document.getElementById("displayName").textContent = data.name || 'My Links';
+
+        const container = document.getElementById("links-container");
+        container.innerHTML = data.links.map(link => `
+          <a class="link-btn" href="/go/${encodeURIComponent(link.label)}" target="_blank">
+            <i class="${link.icon || 'fas fa-link'}"></i> ${link.label}
+          </a>
+        `).join("");
+      } catch (err) {
+        document.getElementById("displayName").textContent = "Failed to load";
+        console.error('Error fetching settings:', err);
+      }
+    }
+
+    loadData();
   </script>
 </body>
 </html>
