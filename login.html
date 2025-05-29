@@ -61,6 +61,15 @@
   </div>
 
 <script>
+  // Initialize users if not already set
+  if (!localStorage.getItem('users')) {
+    const defaultUsers = [
+      { username: "Admin", password: "Flash230421#" },
+      { username: "User1", password: "Password123" }
+    ];
+    localStorage.setItem('users', JSON.stringify(defaultUsers));
+  }
+
   function login() {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -72,20 +81,17 @@
       return;
     }
 
-    // Get users from localStorage (same users you manage in admin panel)
     const users = JSON.parse(localStorage.getItem('users')) || [];
-
     const user = users.find(u => u.username === username && u.password === password);
+
     if (user) {
-      // Save login state (simple flag)
       localStorage.setItem('loggedInUser', username);
-      window.location.href = 'admin.html';  // Change this to your actual admin page filename
+      window.location.href = 'admin.html';
     } else {
       errorDiv.textContent = 'Invalid username or password';
     }
   }
 
-  // If already logged in, redirect to admin panel
   window.onload = () => {
     if (localStorage.getItem('loggedInUser')) {
       window.location.href = 'admin.html';
