@@ -150,6 +150,7 @@
     <h3>Security</h3>
     <input type="password" id="newPassword" placeholder="New Password" />
     <button onclick="changePassword()">Change Password</button>
+    <button onclick="logout()">Logout</button>
 
     <div class="preview">
       <h3>Live Preview</h3>
@@ -245,6 +246,12 @@
       } else {
         alert("Password must be at least 5 characters");
       }
+    }
+
+    function logout() {
+      localStorage.removeItem("adminPW");
+      alert("👋 Logged out!");
+      location.reload();
     }
 
     window.onload = loadSettings;
