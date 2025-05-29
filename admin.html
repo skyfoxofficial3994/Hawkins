@@ -251,7 +251,7 @@
     function logout() {
       localStorage.removeItem("adminPW");
       alert("👋 Logged out!");
-      location.reload();
+      window.location.href = "index.html";
     }
 
     window.onload = loadSettings;
