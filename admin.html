@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trans Princess Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink: #ff85b3;
+      --blue: #91d1ff;
+      --white: #ffffff;
+      --purple: #d7aefb;
+      --bg: linear-gradient(to right, var(--blue), var(--pink), var(--purple));
+      --glass: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      color: #333;
+    }
+
+    .container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      margin: 16px 0;
+    }
+
+    h2, h3 {
+      font-weight: 700;
+      margin: 0 0 16px;
+      text-align: center;
+    }
+
+    input[type="text"], input[type="url"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      background: #fff;
+    }
+
+    button {
+      padding: 10px 16px;
+      background: var(--pink);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 6px;
+    }
+
+    button:hover {
+      background: var(--blue);
+      color: #000;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #fff3f8;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .link-row input {
+      flex: 1 1 100%;
+      min-width: 120px;
+    }
+
+    .remove-btn {
+      background: #e11d48;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      flex: 0 0 auto;
+      align-self: center;
+      cursor: pointer;
+    }
+
+    .preview {
+      border: 2px dashed var(--blue);
+      padding: 12px;
+      border-radius: 16px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    #links-container a {
+      display: block;
+      text-decoration: none;
+      color: white;
+      background: var(--bg);
+      padding: 12px;
+      border-radius: 12px;
+      margin: 6px 0;
+      font-weight: 600;
+    }
+
+    #avatar {
+      width: 80px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      margin-bottom: 8px;
+    }
+
+    #displayName {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Princess Admin Panel 👑</h2>
+    <input type="text" id="adminName" placeholder="Display Name" />
+    <input type="url" id="adminAvatar" placeholder="Avatar URL" />
+
+    <h3>Manage Links</h3>
+    <div id="links-editor"></div>
+    <button onclick="addLink()">+ Add Link</button>
+    <button onclick="saveSettings()">Save Settings</button>
+    <button onclick="resetDefaults()">Reset to Default</button>
+
+    <h3>Security</h3>
+    <input type="password" id="newPassword" placeholder="New Password" />
+    <button onclick="changePassword()">Change Password</button>
+
+    <div class="preview">
+      <h3>Live Preview</h3>
+      <img id="avatar" src="" alt="Avatar" />
+      <div id="displayName"></div>
+      <div id="links-container"></div>
+    </div>
+  </div>
+
+  <script>
+    let ADMIN_PASSWORD = localStorage.getItem("adminPW") || "Flash230421#";
+
+    const defaultSettings = {
+      name: "Princess Lily 🏳️‍⚧️",
+      avatar: "https://i.imgur.com/qfjJA5P.png",
+      links: [
+        { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
+        { label: "TikTok", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
+        { label: "YouTube", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
+      ]
+    };
+
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
+      document.getElementById("avatar").src = settings.avatar;
+      document.getElementById("displayName").textContent = settings.name;
+      document.getElementById("adminName").value = settings.name;
+      document.getElementById("adminAvatar").value = settings.avatar;
+
+      const linksContainer = document.getElementById("links-container");
+      linksContainer.innerHTML = settings.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer"><i class="${l.icon}"></i> ${l.label}</a>`).join("");
+
+      const editor = document.getElementById("links-editor");
+      editor.innerHTML = "";
+      settings.links.forEach((l, i) => {
+        const row = document.createElement("div");
+        row.className = "link-row";
+        row.innerHTML = `
+          <input type="text" class="label" value="${l.label}" placeholder="Label" />
+          <input type="url" class="url" value="${l.url}" placeholder="URL" />
+          <input type="text" class="icon" value="${l.icon}" placeholder="Icon class" />
+          <button class="remove-btn" onclick="removeLink(${i})">Remove</button>
+        `;
+        editor.appendChild(row);
+      });
+    }
+
+    function addLink() {
+      const editor = document.getElementById("links-editor");
+      const row = document.createElement("div");
+      row.className = "link-row";
+      row.innerHTML = `
+        <input type="text" class="label" placeholder="Label" />
+        <input type="url" class="url" placeholder="URL" />
+        <input type="text" class="icon" placeholder="Icon class" />
+        <button class="remove-btn" onclick="this.parentNode.remove()">Remove</button>
+      `;
+      editor.appendChild(row);
+    }
+
+    function removeLink(index) {
+      const editor = document.getElementById("links-editor");
+      if (editor.children[index]) editor.removeChild(editor.children[index]);
+    }
+
+    function saveSettings() {
+      const name = document.getElementById("adminName").value.trim();
+      const avatar = document.getElementById("adminAvatar").value.trim();
+      const links = [...document.querySelectorAll("#links-editor .link-row")].map(row => ({
+        label: row.querySelector(".label").value,
+        url: row.querySelector(".url").value,
+        icon: row.querySelector(".icon").value || "fas fa-link"
+      })).filter(l => l.label && l.url);
+
+      const newSettings = { name, avatar, links };
+      localStorage.setItem("socialSettings", JSON.stringify(newSettings));
+      loadSettings();
+      alert("✨ Princess Settings Saved!");
+    }
+
+    function resetDefaults() {
+      localStorage.setItem("socialSettings", JSON.stringify(defaultSettings));
+      loadSettings();
+      alert("🌈 Reset to Princess Defaults!");
+    }
+
+    function changePassword() {
+      const newPW = document.getElementById("newPassword").value.trim();
+      if (newPW.length > 4) {
+        ADMIN_PASSWORD = newPW;
+        localStorage.setItem("adminPW", newPW);
+        alert("🔐 Password Changed!");
+      } else {
+        alert("Password must be at least 5 characters");
+      }
+    }
+
+    window.onload = loadSettings;
+  </script>
+</body>
+</html>

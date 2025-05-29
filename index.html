@@ -2,292 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Princess Panel</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trans Princess Linktree</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --pink: #f7a8b8;
-      --blue: #55cdfc;
+      --pink: #ff85b3;
+      --blue: #91d1ff;
       --white: #ffffff;
-      --glass: rgba(255, 255, 255, 0.2);
-      --soft-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-      transition: all 0.3s ease;
+      --purple: #d7aefb;
+      --bg: linear-gradient(to right, var(--blue), var(--pink), var(--purple));
+      --glass: rgba(255, 255, 255, 0.15);
     }
 
     body {
       margin: 0;
-      font-family: 'Dancing Script', cursive;
-      background: linear-gradient(120deg, #55cdfc, #f7a8b8, #ffffff);
-      background-size: 400% 400%;
-      animation: bgShift 20s ease infinite;
-      color: #fff;
-      text-align: center;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       min-height: 100vh;
-      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    @keyframes bgShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      justify-content: center;
+      padding: 40px 20px;
+      color: #333;
+      text-align: center;
     }
 
     .container {
       background: var(--glass);
-      backdrop-filter: blur(12px);
-      border-radius: 24px;
-      padding: 24px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: var(--soft-shadow);
-      border: 2px solid var(--white);
-      margin-bottom: 20px;
-    }
-
-    h2, h3 {
-      margin: 0 0 16px;
-      font-size: 32px;
-      font-weight: 600;
-    }
-
-    input[type="text"], input[type="url"], input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 16px;
-      border: none;
-      margin-bottom: 10px;
-      font-size: 18px;
-      text-align: center;
-    }
-
-    button {
-      padding: 12px 20px;
-      background: var(--pink);
-      color: white;
-      font-weight: bold;
-      border: 2px solid var(--white);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: var(--soft-shadow);
-    }
-
-    button:hover {
-      background: var(--blue);
-      color: black;
-    }
-
-    .link-btn {
-      display: block;
-      text-decoration: none;
+      padding: 24px 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
       color: white;
-      background: linear-gradient(90deg, var(--pink), var(--blue));
-      padding: 14px;
-      border-radius: 18px;
-      margin: 10px 0;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-
-    .link-row {
-      background: rgba(255,255,255,0.1);
-      padding: 10px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-
-    .remove-btn {
-      background: #e11d48;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 12px;
-      margin-top: 5px;
     }
 
     #avatar {
       width: 120px;
+      height: 120px;
       border-radius: 50%;
-      border: 4px solid #fff;
-      margin-bottom: 12px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      border: 3px solid white;
+      object-fit: cover;
+      margin-bottom: 16px;
     }
 
-    #darkmode-toggle, #transmode-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      padding: 10px 16px;
-      font-weight: bold;
-      border-radius: 12px;
-      background: #f7a8b8;
-      border: 2px solid #fff;
-      color: #fff;
-      cursor: pointer;
-      z-index: 100;
-      box-shadow: var(--soft-shadow);
+    #displayName {
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 24px;
+      text-shadow: 0 0 6px rgba(255 255 255 / 0.6);
     }
 
-    #transmode-toggle {
-      top: 70px;
+    a.link {
+      display: block;
+      text-decoration: none;
+      color: white;
+      background: var(--pink);
+      margin: 8px 0;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 3px 8px rgba(255, 133, 179, 0.5);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    #loginStatus {
-      color: #fff3cd;
-      font-weight: bold;
-      margin-top: 10px;
+    a.link i {
+      margin-right: 12px;
     }
 
-    @keyframes sparkle {
-      0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
-      50% { transform: rotate(180deg) scale(1.3); opacity: 1; }
-      100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
+    a.link:hover {
+      background: var(--blue);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(145, 209, 255, 0.8);
     }
 
-    .sparkle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 0 6px #fff;
-      animation: sparkle 3s linear infinite;
-      pointer-events: none;
+    /* Admin panel button */
+    #admin-btn {
+      margin-top: 28px;
+      background: var(--purple);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 3px 8px rgba(215, 174, 251, 0.7);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #admin-btn:hover {
+      background: var(--pink);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(255, 133, 179, 0.9);
+    }
+
+    /* Fallback styles if localStorage empty */
+    #empty-msg {
+      color: white;
+      font-style: italic;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <button id="darkmode-toggle">🌓</button>
-  <button id="transmode-toggle">✨ Trans Princess</button>
-
-  <div class="container" id="main-container">
-    <img id="avatar" src="" alt="Avatar">
-    <h2 id="displayName"></h2>
+  <div class="container">
+    <img id="avatar" src="" alt="Avatar" />
+    <div id="displayName">Loading...</div>
     <div id="links-container"></div>
-  </div>
+    <div id="empty-msg" style="display:none;">No links found. Please check back later.</div>
 
-  <div class="container" id="admin-login">
-    <h3>Princess Login</h3>
-    <input type="password" id="passwordInput" placeholder="Royal Password 💎" />
-    <button onclick="checkPassword()">Login</button>
-    <div id="loginStatus"></div>
-  </div>
-
-  <div class="container" id="admin-panel" style="display:none;">
-    <h3>Edit Royal Links</h3>
-    <input type="text" id="adminName" placeholder="Royal Name" />
-    <input type="url" id="adminAvatar" placeholder="Crown Avatar URL" />
-    <h3>Links</h3>
-    <div id="links-editor"></div>
-    <button onclick="addLink()">+ Add Sparkle</button><br><br>
-    <button onclick="saveSettings()">💾 Save My Royal Changes</button>
+    <a href="admin.html" id="admin-btn" title="Go to Admin Panel">👑 Admin Panel</a>
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "Flash230421#";
     const defaultSettings = {
-      name: "Princess LilyFox 💖",
+      name: "Princess Lily 🏳️‍⚧️",
       avatar: "https://i.imgur.com/qfjJA5P.png",
       links: [
-        { label: "Royal Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
-        { label: "TikTok | SkyFox", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
-        { label: "TikTok | CottonCandy", url: "https://www.tiktok.com/@cottoncandy2421", icon: "fab fa-tiktok" },
-        { label: "YouTube Throne", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
-        { label: "Snapchat Palace", url: "https://snapchat.com/add/mhawkins2321", icon: "fab fa-snapchat-ghost" },
-        { label: "Twitch Castle", url: "https://www.twitch.tv/lilyfoxfire", icon: "fab fa-twitch" },
-        { label: "Discord Realm", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
+        { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
+        { label: "TikTok", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
+        { label: "YouTube", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
       ]
     };
 
     function loadSettings() {
       const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
+
       document.getElementById("avatar").src = settings.avatar;
       document.getElementById("displayName").textContent = settings.name;
+
       const linksContainer = document.getElementById("links-container");
-      linksContainer.innerHTML = settings.links.map(link =>
-        `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i> ${link.label}</a>`
-      ).join("");
-      document.getElementById("adminName").value = settings.name;
-      document.getElementById("adminAvatar").value = settings.avatar;
-      const editor = document.getElementById("links-editor");
-      editor.innerHTML = "";
-      settings.links.forEach((link, i) => {
-        const row = document.createElement("div");
-        row.className = "link-row";
-        row.innerHTML = `
-          <input type="text" class="label" value="${link.label}" placeholder="Label" />
-          <input type="url" class="url" value="${link.url}" placeholder="URL" />
-          <input type="text" class="icon" value="${link.icon}" placeholder="Icon" />
-          <button class="remove-btn" onclick="removeLink(${i})">Remove</button>
-        `;
-        editor.appendChild(row);
-      });
-    }
-
-    function addLink() {
-      const editor = document.getElementById("links-editor");
-      const index = editor.children.length;
-      const row = document.createElement("div");
-      row.className = "link-row";
-      row.innerHTML = `
-        <input type="text" class="label" placeholder="Label" />
-        <input type="url" class="url" placeholder="URL" />
-        <input type="text" class="icon" placeholder="Icon" />
-        <button class="remove-btn" onclick="removeLink(${index})">Remove</button>
-      `;
-      editor.appendChild(row);
-    }
-
-    function removeLink(index) {
-      const editor = document.getElementById("links-editor");
-      if (editor.children[index]) {
-        editor.removeChild(editor.children[index]);
-      }
-    }
-
-    function saveSettings() {
-      const name = document.getElementById("adminName").value.trim();
-      const avatar = document.getElementById("adminAvatar").value.trim();
-      const editor = document.getElementById("links-editor");
-      const links = [...editor.children].map(row => ({
-        label: row.querySelector(".label").value,
-        url: row.querySelector(".url").value,
-        icon: row.querySelector(".icon").value || "fas fa-link"
-      })).filter(link => link.label && link.url);
-      const settings = { name, avatar, links };
-      localStorage.setItem("socialSettings", JSON.stringify(settings));
-      loadSettings();
-      alert("Saved like a royal decree!");
-    }
-
-    function checkPassword() {
-      const pw = document.getElementById("passwordInput").value;
-      if (pw === ADMIN_PASSWORD) {
-        document.getElementById("admin-login").style.display = "none";
-        document.getElementById("admin-panel").style.display = "block";
+      if (settings.links && settings.links.length > 0) {
+        linksContainer.innerHTML = settings.links.map(link =>
+          `<a class="link" href="${link.url}" target="_blank" rel="noopener noreferrer">
+            <i class="${link.icon}"></i> ${link.label}
+          </a>`
+        ).join("");
+        document.getElementById("empty-msg").style.display = "none";
       } else {
-        document.getElementById("loginStatus").textContent = "That isn’t your royal password!";
+        linksContainer.innerHTML = "";
+        document.getElementById("empty-msg").style.display = "block";
       }
     }
-
-    const toggleBtn = document.getElementById("darkmode-toggle");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-    });
-
-    const transToggle = document.getElementById("transmode-toggle");
-    transToggle.addEventListener("click", () => {
-      alert("You’re already shining bright, princess! 💖");
-    });
 
     window.onload = loadSettings;
   </script>
