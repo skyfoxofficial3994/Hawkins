@@ -292,255 +292,214 @@
         document.getElementById("user-manager").style.display = "none";
       }
     }
+
     setPermissions(currentUser.perms);
 
     // Load settings from localStorage or defaults
     function loadSettings() {
-      const stored = JSON.parse(localStorage.getItem("transPrincessAdminSettings"));
-      if (!stored) {
-        localStorage.setItem("transPrincessAdminSettings", JSON.stringify(defaultSettings));
-        return defaultSettings;
+      let settings = JSON.parse(localStorage.getItem("panelSettings"));
+      if (!settings) {
+        settings = JSON.parse(JSON.stringify(defaultSettings));
+        localStorage.setItem("panelSettings", JSON.stringify(settings));
       }
-      return stored;
+      return settings;
     }
 
     let settings = loadSettings();
 
-    // Populate inputs and preview
-    function populate() {
+    // Fill inputs and preview
+    function fillUI() {
       document.getElementById("adminName").value = settings.name;
       document.getElementById("adminAvatar").value = settings.avatar;
-      renderLinksEditor();
-      updatePreview();
-      renderUserManager();
+      document.getElementById("avatar").src = settings.avatar;
+      document.getElementById("displayName").textContent = settings.name;
+
+      buildLinksEditor(settings.links);
+      updatePreviewLinks(settings.links);
     }
 
-    // Render links editor inputs
-    function renderLinksEditor() {
+    fillUI();
+
+    // Build editable links UI
+    function buildLinksEditor(links) {
       const container = document.getElementById("links-editor");
       container.innerHTML = "";
-      settings.links.forEach((link, i) => {
+
+      links.forEach((link, i) => {
         const div = document.createElement("div");
         div.className = "link-row";
 
         const labelInput = document.createElement("input");
         labelInput.type = "text";
-        labelInput.value = link.label;
         labelInput.placeholder = "Label";
-        labelInput.oninput = e => {
-          settings.links[i].label = e.target.value;
-          updatePreview();
-        };
+        labelInput.value = link.label;
+        labelInput.oninput = () => updateLink(i, "label", labelInput.value);
 
         const urlInput = document.createElement("input");
         urlInput.type = "url";
-        urlInput.value = link.url;
         urlInput.placeholder = "URL";
-        urlInput.oninput = e => {
-          settings.links[i].url = e.target.value;
-          updatePreview();
-        };
+        urlInput.value = link.url;
+        urlInput.oninput = () => updateLink(i, "url", urlInput.value);
 
         const iconInput = document.createElement("input");
         iconInput.type = "text";
+        iconInput.placeholder = "Icon class (FontAwesome)";
         iconInput.value = link.icon;
-        iconInput.placeholder = "FontAwesome Icon class";
-        iconInput.oninput = e => {
-          settings.links[i].icon = e.target.value;
-          updatePreview();
-        };
+        iconInput.oninput = () => updateLink(i, "icon", iconInput.value);
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.textContent = "Remove";
-        removeBtn.onclick = () => {
-          settings.links.splice(i, 1);
-          renderLinksEditor();
-          updatePreview();
-        };
+        removeBtn.onclick = () => removeLink(i);
+        removeBtn.disabled = currentUser.perms === "viewer";
 
         div.appendChild(labelInput);
         div.appendChild(urlInput);
         div.appendChild(iconInput);
         div.appendChild(removeBtn);
 
-        // Disable editing if user perms < editor
-        if (currentUser.perms === "viewer") {
-          labelInput.disabled = true;
-          urlInput.disabled = true;
-          iconInput.disabled = true;
-          removeBtn.disabled = true;
-        } else if (currentUser.perms === "editor") {
-          // Enabled for editor
-        }
-
         container.appendChild(div);
       });
     }
 
-    // Add new link row
+    function updateLink(index, field, value) {
+      settings.links[index][field] = value;
+      updatePreviewLinks(settings.links);
+    }
+
+    function removeLink(index) {
+      if (currentUser.perms === "viewer") return;
+      settings.links.splice(index, 1);
+      buildLinksEditor(settings.links);
+      updatePreviewLinks(settings.links);
+    }
+
     function addLink() {
+      if (currentUser.perms === "viewer") return;
       settings.links.push({ label: "", url: "", icon: "" });
-      renderLinksEditor();
+      buildLinksEditor(settings.links);
+      updatePreviewLinks(settings.links);
+    }
+
+    function updatePreviewLinks(links) {
+      const container = document.getElementById("links-container");
+      container.innerHTML = "";
+      links.forEach(link => {
+        if (link.label && link.url) {
+          const a = document.createElement("a");
+          a.href = link.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.innerHTML = (link.icon ? `<i class="${link.icon}"></i> ` : "") + link.label;
+          container.appendChild(a);
+        }
+      });
     }
 
     // Save settings to localStorage
     function saveSettings() {
-      settings.name = document.getElementById("adminName").value;
-      settings.avatar = document.getElementById("adminAvatar").value;
-      localStorage.setItem("transPrincessAdminSettings", JSON.stringify(settings));
+      if (currentUser.perms === "viewer") return;
+      settings.name = document.getElementById("adminName").value.trim();
+      settings.avatar = document.getElementById("adminAvatar").value.trim();
+      localStorage.setItem("panelSettings", JSON.stringify(settings));
+      fillUI();
       alert("Settings saved!");
-      updatePreview();
     }
 
-    // Reset settings to defaults
+    // Reset settings to default
     function resetDefaults() {
-      if (confirm("Are you sure you want to reset to default settings? This cannot be undone.")) {
-        settings = JSON.parse(JSON.stringify(defaultSettings));
-        localStorage.setItem("transPrincessAdminSettings", JSON.stringify(settings));
-        populate();
-        alert("Settings reset to default.");
-      }
+      if (currentUser.perms === "viewer") return;
+      if (!confirm("Reset settings to default? This cannot be undone.")) return;
+      settings = JSON.parse(JSON.stringify(defaultSettings));
+      localStorage.setItem("panelSettings", JSON.stringify(settings));
+      fillUI();
     }
 
-    // Update live preview
-    function updatePreview() {
-      document.getElementById("avatar").src = settings.avatar || "";
-      document.getElementById("displayName").textContent = settings.name || "";
-      const linksContainer = document.getElementById("links-container");
-      linksContainer.innerHTML = "";
-
-      settings.links.forEach(link => {
-        if (!link.url) return;
-        const a = document.createElement("a");
-        a.href = link.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.innerHTML = `${link.icon ? `<i class="${link.icon}"></i> ` : ""}${link.label}`;
-        linksContainer.appendChild(a);
-      });
-    }
-
-    // Change password (admins only)
+    // Change logged in user's password (admin only)
     function changePassword() {
-      if (currentUser.perms !== "admin") {
-        alert("Only admins can change passwords.");
-        return;
-      }
-      const newPass = document.getElementById("newPassword").value;
-      if (!newPass) {
-        alert("Enter a new password.");
-        return;
-      }
-      // Update password in usersDB
-      const userIndex = usersDB.findIndex(u => u.username === currentUser.username);
-      if (userIndex === -1) {
-        alert("User not found.");
-        return;
-      }
-      usersDB[userIndex].password = newPass;
-      currentUser.password = newPass;
-      sessionStorage.setItem("loggedInUser", JSON.stringify(currentUser));
-      localStorage.setItem("users", JSON.stringify(usersDB));
-      alert("Password changed successfully.");
-      document.getElementById("newPassword").value = "";
+      if (currentUser.perms !== "admin") return alert("You do not have permission.");
+      const newPass = document.getElementById("newPassword").value.trim();
+      if (!newPass) return alert("Enter a new password.");
+      
+      let users = JSON.parse(localStorage.getItem("users"));
+      const userIndex = users.findIndex(u => u.username === currentUser.username);
+      if (userIndex === -1) return alert("User not found.");
+
+      users[userIndex].password = newPass;
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("Password changed. You will need to log in again.");
+      logout();
     }
 
-    // User management (admins only)
+    // User management (admin only)
     function renderUserManager() {
-      const manager = document.getElementById("user-manager");
-      manager.innerHTML = "";
-
-      if (currentUser.perms !== "admin") {
-        manager.style.display = "none";
-        return;
-      }
-      manager.style.display = "block";
-
-      usersDB.forEach((user, i) => {
+      const container = document.getElementById("user-manager");
+      container.innerHTML = "<h4>Existing Users:</h4>";
+      let users = JSON.parse(localStorage.getItem("users"));
+      users.forEach((user, i) => {
         const div = document.createElement("div");
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-        div.style.justifyContent = "space-between";
         div.style.marginBottom = "6px";
+        div.textContent = `${user.username} (${user.perms}) `;
 
-        const info = document.createElement("div");
-        info.textContent = `${user.username} (${user.perms})`;
-
-        const removeBtn = document.createElement("button");
-        removeBtn.textContent = "Remove";
-        removeBtn.style.background = "#e11d48";
-        removeBtn.onclick = () => {
-          if (confirm(`Remove user '${user.username}'?`)) {
-            usersDB.splice(i, 1);
-            localStorage.setItem("users", JSON.stringify(usersDB));
+        if (user.username !== currentUser.username) {
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete";
+          delBtn.onclick = () => {
+            if (!confirm(`Delete user ${user.username}?`)) return;
+            users.splice(i, 1);
+            localStorage.setItem("users", JSON.stringify(users));
             renderUserManager();
-          }
-        };
-
-        // Don't allow removing self
-        if (user.username === currentUser.username) {
-          removeBtn.disabled = true;
+          };
+          div.appendChild(delBtn);
+        } else {
+          div.appendChild(document.createTextNode(" (You)"));
         }
-
-        div.appendChild(info);
-        div.appendChild(removeBtn);
-        manager.appendChild(div);
+        container.appendChild(div);
       });
     }
 
-    // Add new user (admins only)
     function addUser() {
-      if (currentUser.perms !== "admin") {
-        alert("Only admins can add users.");
-        return;
-      }
+      if (currentUser.perms !== "admin") return alert("You do not have permission.");
       const username = document.getElementById("newUsername").value.trim();
       const password = document.getElementById("newUserPassword").value.trim();
       const perms = document.getElementById("newUserPerms").value;
 
-      if (!username || !password) {
-        alert("Username and password cannot be empty.");
-        return;
+      if (!username || !password || !perms) {
+        return alert("Fill all user fields.");
       }
 
-      if (!allowedPerms.includes(perms)) {
-        alert("Invalid permission selected.");
-        return;
+      let users = JSON.parse(localStorage.getItem("users"));
+      if (users.find(u => u.username === username)) {
+        return alert("Username already exists.");
       }
 
-      if (usersDB.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-        alert("Username already exists.");
-        return;
-      }
+      users.push({ username, password, perms });
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("User added.");
+      renderUserManager();
 
-      usersDB.push({ username, password, perms });
-      localStorage.setItem("users", JSON.stringify(usersDB));
-      alert(`User '${username}' added as ${perms}.`);
       document.getElementById("newUsername").value = "";
       document.getElementById("newUserPassword").value = "";
+    }
+
+    if (currentUser.perms === "admin") {
       renderUserManager();
     }
 
-    // Logout function
+    // Instant logout and redirect to index.html
     function logout() {
       sessionStorage.removeItem("loggedInUser");
-      location.reload();
+      window.location.href = "index.html";
     }
 
-    // Bind inputs for live preview update
+    // Update live preview when name/avatar change
     document.getElementById("adminName").addEventListener("input", e => {
-      settings.name = e.target.value;
-      updatePreview();
+      document.getElementById("displayName").textContent = e.target.value;
     });
 
     document.getElementById("adminAvatar").addEventListener("input", e => {
-      settings.avatar = e.target.value;
-      updatePreview();
+      document.getElementById("avatar").src = e.target.value;
     });
-
-    // Initialize UI
-    populate();
   </script>
 </body>
 </html>
