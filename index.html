@@ -1,314 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simple Linktree Admin</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(115deg, #f7b42c, #fc575e);
-    min-height: 100vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    color: white;
-    transition: background 0.5s, color 0.5s;
-  }
-  .container {
-    background: rgba(255 255 255 / 0.15);
-    padding: 20px;
-    border-radius: 12px;
-    width: 350px;
-    margin: 10px 0;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    transition: background 0.5s, box-shadow 0.5s;
-  }
-  input[type="text"], input[type="url"], input[type="password"] {
-    width: calc(100% - 10px);
-    padding: 6px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    border: none;
-    transition: background-color 0.5s, color 0.5s;
-  }
-  button {
-    background: #fc575e;
-    border: none;
-    padding: 10px 14px;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: background 0.5s, color 0.5s;
-  }
-  button:hover {
-    background: #f7b42c;
-    color: black;
-  }
-  .link-row {
-    background: rgba(255 255 255 / 0.3);
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    transition: background 0.5s;
-  }
-  .link-row input {
-    flex-grow: 1;
-  }
-  .remove-btn {
-    background: #ff4c4c;
-    border: none;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.5s;
-  }
-  .remove-btn:hover {
-    background: #d43535;
-  }
-  a.link-btn {
-    display: block;
-    background: linear-gradient(90deg, #fc575e, #f7b42c);
-    padding: 12px;
-    border-radius: 16px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 6px 0;
-    transition: background 0.5s;
-  }
-  a.link-btn i {
-    margin-right: 8px;
-  }
-
-  /* Dark mode styles */
-  body.darkmode {
-    background: #121212;
-    color: #ddd;
-  }
-  body.darkmode .container {
-    background: rgba(40, 40, 40, 0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.7);
-  }
-  body.darkmode input[type="text"],
-  body.darkmode input[type="url"],
-  body.darkmode input[type="password"] {
-    background-color: #222;
-    color: #eee;
-  }
-  body.darkmode button {
-    background: #bb3750;
-    color: white;
-  }
-  body.darkmode button:hover {
-    background: #f7b42c;
-    color: black;
-  }
-  body.darkmode .link-row {
-    background: rgba(60, 60, 60, 0.6);
-  }
-  body.darkmode .remove-btn {
-    background: #d14343;
-  }
-  body.darkmode .remove-btn:hover {
-    background: #a12a2a;
-  }
-  body.darkmode a.link-btn {
-    background: linear-gradient(90deg, #bb3750, #f7b42c);
-    color: white;
-  }
-
-  /* Dark mode toggle button */
-  #darkmode-toggle {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: #fc575e;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    z-index: 1000;
-    transition: background 0.5s, color 0.5s;
-  }
-  #darkmode-toggle:hover {
-    background: #f7b42c;
-    color: black;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Linktree Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #fc575e;
+      --secondary: #f7b42c;
+      --bg-light: #f9fafb;
+      --bg-dark: #121212;
+      --text-light: #1f2937;
+      --text-dark: #e5e7eb;
+      --glass: rgba(255, 255, 255, 0.1);
+    }
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      color: var(--text-light);
+    }
+    .container {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      margin: 16px 0;
+    }
+    h2, h3 {
+      margin-top: 0;
+      font-weight: 600;
+    }
+    input[type="text"], input[type="url"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 16px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: var(--secondary);
+      color: #000;
+    }
+    .link-btn {
+      display: block;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      padding: 12px;
+      border-radius: 12px;
+      margin: 8px 0;
+      font-weight: 600;
+      text-align: center;
+    }
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .link-row input {
+      flex: 1 1 100%;
+    }
+    .remove-btn {
+      background: #e11d48;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    #darkmode-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      padding: 10px 14px;
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #darkmode-toggle:hover {
+      background: var(--secondary);
+      color: #000;
+    }
+    body.darkmode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    body.darkmode .container {
+      background: rgba(40, 40, 40, 0.85);
+    }
+    body.darkmode .link-btn {
+      background: linear-gradient(90deg, #bb3750, #f7b42c);
+    }
+    body.darkmode button {
+      background: #bb3750;
+    }
+    body.darkmode button:hover {
+      background: #f7b42c;
+      color: black;
+    }
+  </style>
 </head>
 <body>
-
   <button id="darkmode-toggle">Dark Mode</button>
-
-  <!-- Display -->
   <div class="container" id="main-container">
-    <img id="avatar" src="" alt="Avatar" style="width:100px; border-radius:50%; margin-bottom: 12px; border: 3px solid #fff;">
+    <img id="avatar" src="" alt="Avatar" style="width:100px; border-radius:50%; border: 3px solid #fff; margin-bottom:12px;">
     <h2 id="displayName"></h2>
     <div id="links-container"></div>
   </div>
 
-  <!-- Admin Login -->
   <div class="container" id="admin-login">
     <h3>Admin Login</h3>
     <input type="password" id="passwordInput" placeholder="Enter password" />
     <button onclick="checkPassword()">Login</button>
-    <p id="loginStatus" style="color:#ffcccc;"></p>
+    <p id="loginStatus" style="color:#fca5a5;"></p>
   </div>
 
-  <!-- Admin Panel -->
   <div class="container" id="admin-panel" style="display:none;">
     <h3>Edit Profile</h3>
-    <label>Name:</label>
-    <input type="text" id="adminName" /><br>
-    <label>Avatar URL:</label>
-    <input type="url" id="adminAvatar" /><br>
+    <input type="text" id="adminName" placeholder="Display Name" />
+    <input type="url" id="adminAvatar" placeholder="Avatar URL" />
 
     <h3>Links</h3>
     <div id="links-editor"></div>
-    <button onclick="addLink()">+ Add Link</button><br>
+    <button onclick="addLink()">+ Add Link</button><br><br>
     <button onclick="saveSettings()">Save Changes</button>
   </div>
 
-<script>
-  const ADMIN_PASSWORD = "Flash230421#";
+  <script>
+    const ADMIN_PASSWORD = "Flash230421#";
+    const defaultSettings = {
+      name: "lilyfirefox Socials",
+      avatar: "https://i.imgur.com/qfjJA5P.png",
+      links: [
+        { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
+        { label: "TikTok | SkyFox", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
+        { label: "TikTok | CottonCandy", url: "https://www.tiktok.com/@cottoncandy2421", icon: "fab fa-tiktok" },
+        { label: "YouTube", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
+        { label: "Snapchat", url: "https://snapchat.com/add/mhawkins2321", icon: "fab fa-snapchat-ghost" },
+        { label: "Twitch", url: "https://www.twitch.tv/lilyfoxfire", icon: "fab fa-twitch" },
+        { label: "Discord", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
+      ]
+    };
 
-  const defaultSettings = {
-    name: "lilyfirefox Socials",
-    avatar: "https://i.imgur.com/qfjJA5P.png",
-    links: [
-      { label: "Instagram", url: "https://instagram.com/skyfoxofficial3994", icon: "fab fa-instagram" },
-      { label: "TikTok | SkyFox", url: "https://tiktok.com/@skyfoxofficial3994", icon: "fab fa-tiktok" },
-      { label: "TikTok | CottonCandy", url: "https://www.tiktok.com/@cottoncandy2421", icon: "fab fa-tiktok" },
-      { label: "YouTube", url: "https://youtube.com/@skyfoxofficial3994", icon: "fab fa-youtube" },
-      { label: "Snapchat", url: "https://snapchat.com/add/mhawkins2321", icon: "fab fa-snapchat-ghost" },
-      { label: "Twitch", url: "https://www.twitch.tv/lilyfoxfire", icon: "fab fa-twitch" },
-      { label: "Discord", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
-    ]
-  };
-
-  function loadSettings() {
-    const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
-
-    document.getElementById("avatar").src = settings.avatar;
-    document.getElementById("displayName").textContent = settings.name;
-
-    const linksContainer = document.getElementById("links-container");
-    linksContainer.innerHTML = settings.links.map(link =>
-      `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i>${link.label}</a>`
-    ).join("");
-
-    // Fill admin inputs
-    document.getElementById("adminName").value = settings.name;
-    document.getElementById("adminAvatar").value = settings.avatar;
-
-    // Render link editor rows
-    const editor = document.getElementById("links-editor");
-    editor.innerHTML = "";
-    settings.links.forEach((link, i) => {
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
+      document.getElementById("avatar").src = settings.avatar;
+      document.getElementById("displayName").textContent = settings.name;
+      const linksContainer = document.getElementById("links-container");
+      linksContainer.innerHTML = settings.links.map(link =>
+        `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i> ${link.label}</a>`
+      ).join("");
+      document.getElementById("adminName").value = settings.name;
+      document.getElementById("adminAvatar").value = settings.avatar;
+      const editor = document.getElementById("links-editor");
+      editor.innerHTML = "";
+      settings.links.forEach((link, i) => {
+        const row = document.createElement("div");
+        row.className = "link-row";
+        row.innerHTML = `
+          <input type="text" class="label" value="${link.label}" placeholder="Label" />
+          <input type="url" class="url" value="${link.url}" placeholder="URL" />
+          <input type="text" class="icon" value="${link.icon}" placeholder="Icon class" />
+          <button class="remove-btn" onclick="removeLink(${i})">Remove</button>
+        `;
+        editor.appendChild(row);
+      });
+    }
+    function addLink() {
+      const editor = document.getElementById("links-editor");
+      const index = editor.children.length;
       const row = document.createElement("div");
       row.className = "link-row";
       row.innerHTML = `
-        <input type="text" placeholder="Label" value="${link.label}" data-index="${i}" class="label" />
-        <input type="url" placeholder="URL" value="${link.url}" data-index="${i}" class="url" />
-        <input type="text" placeholder="Icon class" value="${link.icon}" data-index="${i}" class="icon" />
-        <button class="remove-btn" onclick="removeLink(${i})">x</button>
+        <input type="text" class="label" placeholder="Label" />
+        <input type="url" class="url" placeholder="URL" />
+        <input type="text" class="icon" placeholder="Icon class" />
+        <button class="remove-btn" onclick="removeLink(${index})">Remove</button>
       `;
       editor.appendChild(row);
-    });
-  }
-
-  function addLink() {
-    const editor = document.getElementById("links-editor");
-    const index = editor.children.length;
-    const row = document.createElement("div");
-    row.className = "link-row";
-    row.innerHTML = `
-      <input type="text" placeholder="Label" data-index="${index}" class="label" />
-      <input type="url" placeholder="URL" data-index="${index}" class="url" />
-      <input type="text" placeholder="Icon class" data-index="${index}" class="icon" />
-      <button class="remove-btn" onclick="removeLink(${index})">x</button>
-    `;
-    editor.appendChild(row);
-  }
-
-  function removeLink(index) {
-    const editor = document.getElementById("links-editor");
-    if (editor.children[index]) {
-      editor.removeChild(editor.children[index]);
-      // Update indexes on remaining children
-      [...editor.children].forEach((child, i) => {
-        child.querySelectorAll("input").forEach(input => input.dataset.index = i);
-        child.querySelector("button").setAttribute("onclick", `removeLink(${i})`);
-      });
     }
-  }
-
-  function saveSettings() {
-    const name = document.getElementById("adminName").value.trim();
-    const avatar = document.getElementById("adminAvatar").value.trim();
-    const editor = document.getElementById("links-editor");
-
-    const links = [];
-    for (let row of editor.children) {
-      const label = row.querySelector(".label").value.trim();
-      const url = row.querySelector(".url").value.trim();
-      const icon = row.querySelector(".icon").value.trim() || "fas fa-link";
-      if(label && url) {
-        links.push({ label, url, icon });
+    function removeLink(index) {
+      const editor = document.getElementById("links-editor");
+      if (editor.children[index]) {
+        editor.removeChild(editor.children[index]);
       }
     }
-
-    const settings = { name, avatar, links };
-    localStorage.setItem("socialSettings", JSON.stringify(settings));
-    loadSettings();
-    alert("Settings saved!");
-  }
-
-  function checkPassword() {
-    const pw = document.getElementById("passwordInput").value;
-    if (pw === ADMIN_PASSWORD) {
-      document.getElementById("admin-login").style.display = "none";
-      document.getElementById("admin-panel").style.display = "block";
-    } else {
-      document.getElementById("loginStatus").textContent = "Incorrect password.";
+    function saveSettings() {
+      const name = document.getElementById("adminName").value.trim();
+      const avatar = document.getElementById("adminAvatar").value.trim();
+      const editor = document.getElementById("links-editor");
+      const links = [...editor.children].map(row => {
+        return {
+          label: row.querySelector(".label").value,
+          url: row.querySelector(".url").value,
+          icon: row.querySelector(".icon").value || "fas fa-link"
+        };
+      }).filter(link => link.label && link.url);
+      const settings = { name, avatar, links };
+      localStorage.setItem("socialSettings", JSON.stringify(settings));
+      loadSettings();
+      alert("Settings saved!");
     }
-  }
-
-  // Dark mode toggle logic
-  const darkModeToggle = document.getElementById("darkmode-toggle");
-
-  // Load dark mode preference from localStorage
-  const savedDarkMode = localStorage.getItem("darkMode");
-  if (savedDarkMode === "enabled") {
-    document.body.classList.add("darkmode");
-    darkModeToggle.textContent = "Light Mode";
-  }
-
-  darkModeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("darkmode");
-    if (document.body.classList.contains("darkmode")) {
-      darkModeToggle.textContent = "Light Mode";
-      localStorage.setItem("darkMode", "enabled");
-    } else {
-      darkModeToggle.textContent = "Dark Mode";
-      localStorage.setItem("darkMode", "disabled");
+    function checkPassword() {
+      const pw = document.getElementById("passwordInput").value;
+      if (pw === ADMIN_PASSWORD) {
+        document.getElementById("admin-login").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+      } else {
+        document.getElementById("loginStatus").textContent = "Incorrect password.";
+      }
     }
-  });
-
-  window.onload = loadSettings;
-</script>
-
+    const toggleBtn = document.getElementById("darkmode-toggle");
+    if (localStorage.getItem("darkMode") === "enabled") {
+      document.body.classList.add("darkmode");
+      toggleBtn.textContent = "Light Mode";
+    }
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("darkmode");
+      if (document.body.classList.contains("darkmode")) {
+        localStorage.setItem("darkMode", "enabled");
+        toggleBtn.textContent = "Light Mode";
+      } else {
+        localStorage.setItem("darkMode", "disabled");
+        toggleBtn.textContent = "Dark Mode";
+      }
+    });
+    window.onload = loadSettings;
+  </script>
 </body>
 </html>
