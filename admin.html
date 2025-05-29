@@ -72,9 +72,15 @@
       margin: 6px;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background: var(--blue);
       color: #000;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #666;
     }
 
     .link-row {
@@ -100,6 +106,11 @@
       flex: 0 0 auto;
       align-self: center;
       cursor: pointer;
+    }
+
+    .remove-btn:disabled {
+      background: #f7a6b8;
+      cursor: not-allowed;
     }
 
     .preview {
@@ -133,24 +144,37 @@
       font-weight: 700;
       margin-bottom: 12px;
     }
+
+    /* Hide inputs/buttons for viewer */
+    .viewer * {
+      pointer-events: none;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Princess Admin Panel 👑</h2>
+    
+    <!-- Show current user role and logout -->
+    <div style="text-align:center; margin-bottom: 20px;">
+      <strong>User Role: <span id="userRoleDisplay"></span></strong><br/>
+      <button onclick="logout()">Logout</button>
+    </div>
+    
+    <!-- Admin fields -->
     <input type="text" id="adminName" placeholder="Display Name" />
     <input type="url" id="adminAvatar" placeholder="Avatar URL" />
 
     <h3>Manage Links</h3>
     <div id="links-editor"></div>
-    <button onclick="addLink()">+ Add Link</button>
-    <button onclick="saveSettings()">Save Settings</button>
-    <button onclick="resetDefaults()">Reset to Default</button>
+    <button id="addLinkBtn" onclick="addLink()">+ Add Link</button>
+    <button id="saveSettingsBtn" onclick="saveSettings()">Save Settings</button>
+    <button id="resetDefaultsBtn" onclick="resetDefaults()">Reset to Default</button>
 
     <h3>Security</h3>
     <input type="password" id="newPassword" placeholder="New Password" />
-    <button onclick="changePassword()">Change Password</button>
-    <button onclick="logout()">Logout</button>
+    <button id="changePasswordBtn" onclick="changePassword()">Change Password</button>
 
     <h3>Manage Users</h3>
     <div id="user-manager"></div>
@@ -161,7 +185,7 @@
       <option value="editor">Editor</option>
       <option value="admin">Admin</option>
     </select>
-    <button onclick="addUser()">+ Add User</button>
+    <button id="addUserBtn" onclick="addUser()">+ Add User</button>
 
     <div class="preview">
       <h3>Live Preview</h3>
@@ -172,7 +196,34 @@
   </div>
 
   <script>
-    let ADMIN_PASSWORD = localStorage.getItem("adminPW") || "Flash230421#";
+    // Example user login simulation (replace with real auth in production)
+    // For demo, just ask for username & password prompt:
+    const usersDB = JSON.parse(localStorage.getItem("users")) || [
+      { username: "admin", password: "adminpass", perms: "admin" },
+      { username: "editor", password: "editorpass", perms: "editor" },
+      { username: "viewer", password: "viewerpass", perms: "viewer" }
+    ];
+    
+    // Login prompt - replace or integrate with real login
+    function loginPrompt() {
+      let loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+      if (loggedInUser) return loggedInUser;
+
+      while(true) {
+        const username = prompt("Enter username:");
+        if (!username) { alert("Login cancelled."); window.location.href = "index.html"; return null; }
+        const password = prompt("Enter password:");
+        if (!password) { alert("Login cancelled."); window.location.href = "index.html"; return null; }
+
+        const user = usersDB.find(u => u.username === username && u.password === password);
+        if (user) {
+          sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+          return user;
+        } else {
+          alert("Invalid username or password. Try again.");
+        }
+      }
+    }
 
     const defaultSettings = {
       name: "Princess Lily 🏳️‍⚧️",
@@ -184,6 +235,86 @@
       ]
     };
 
+    const allowedPerms = ["viewer", "editor", "admin"];
+
+    let currentUser = loginPrompt();
+    if (!currentUser) {
+      // If login failed or cancelled
+      document.body.innerHTML = "<h2>Access Denied</h2>";
+      throw new Error("No login");
+    }
+    
+    document.getElementById("userRoleDisplay").textContent = currentUser.perms.toUpperCase();
+
+    // Adjust UI based on role:
+    function setPermissions(perms) {
+      const isViewer = perms === "viewer";
+      const isEditor = perms === "editor";
+      const isAdmin = perms === "admin";
+
+      // Disable all inputs/buttons initially (except logout)
+      document.querySelectorAll("input, button, select").forEach(el => {
+        if (el.textContent === "Logout" || el.id === "userRoleDisplay") return;
+        el.disabled = true;
+      });
+
+      // Viewer: No editing
+      if (isViewer) {
+        // Disable container interaction for viewer, except logout
+        document.body.classList.add("viewer");
+        // Inputs/buttons remain disabled (already done)
+      }
+
+      // Editor: can edit links only
+      else if (isEditor) {
+        document.body.classList.remove("viewer");
+        // Enable link editing inputs/buttons
+        document.getElementById("adminName").disabled = true;
+        document.getElementById("adminAvatar").disabled = true;
+        document.getElementById("newPassword").disabled = true;
+        document.getElementById("newUsername").disabled = true;
+        document.getElementById("newUserPassword").disabled = true;
+        document.getElementById("newUserPerms").disabled = true;
+
+        // Enable buttons related to links only
+        document.getElementById("addLinkBtn").disabled = false;
+        document.getElementById("saveSettingsBtn").disabled = false;
+        document.getElementById("resetDefaultsBtn").disabled = false;
+
+        // Disable remove buttons for links? No, editors can remove links:
+        // Will enable remove buttons later on link render.
+
+        // Disable user management buttons
+        document.getElementById("addUserBtn").disabled = true;
+
+        // Disable change password
+        document.getElementById("changePasswordBtn").disabled = true;
+      }
+
+      // Admin: full access
+      else if (isAdmin) {
+        document.body.classList.remove("viewer");
+        document.querySelectorAll("input, button, select").forEach(el => {
+          el.disabled = false;
+        });
+      }
+    }
+
+    // Disable/enable remove buttons dynamically according to role
+    function updateRemoveButtons() {
+      const isEditor = currentUser.perms === "editor";
+      const isAdmin = currentUser.perms === "admin";
+
+      document.querySelectorAll(".link-row .remove-btn").forEach(btn => {
+        btn.disabled = !(isEditor || isAdmin);
+      });
+
+      document.querySelectorAll("#user-manager .remove-btn").forEach(btn => {
+        btn.disabled = !isAdmin;
+      });
+    }
+
+    // Load current saved settings or default
     function loadSettings() {
       const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
       document.getElementById("avatar").src = settings.avatar;
@@ -208,6 +339,7 @@
         editor.appendChild(row);
       });
 
+      updateRemoveButtons();
       loadUsers();
     }
 
@@ -222,6 +354,7 @@
         <button class="remove-btn" onclick="this.parentNode.remove()">Remove</button>
       `;
       editor.appendChild(row);
+      updateRemoveButtons();
     }
 
     function removeLink(index) {
@@ -230,30 +363,49 @@
     }
 
     function saveSettings() {
-      const name = document.getElementById("adminName").value.trim();
-      const avatar = document.getElementById("adminAvatar").value.trim();
-      const links = [...document.querySelectorAll("#links-editor .link-row")].map(row => ({
-        label: row.querySelector(".label").value,
-        url: row.querySelector(".url").value,
-        icon: row.querySelector(".icon").value || "fas fa-link"
-      })).filter(l => l.label && l.url);
+      if (currentUser.perms === "viewer") {
+        alert("You do not have permission to save settings.");
+        return;
+      }
 
-      const newSettings = { name, avatar, links };
-      localStorage.setItem("socialSettings", JSON.stringify(newSettings));
-      loadSettings();
-      alert("✨ Princess Settings Saved!");
+      if (currentUser.perms === "editor" || currentUser.perms === "admin") {
+        const name = document.getElementById("adminName").value.trim();
+        const avatar = document.getElementById("adminAvatar").value.trim();
+
+        // Editors cannot edit name/avatar, so keep old values
+        let finalName = currentUser.perms === "admin" ? name : document.getElementById("displayName").textContent;
+        let finalAvatar = currentUser.perms === "admin" ? avatar : document.getElementById("avatar").src;
+
+        const links = [...document.querySelectorAll("#links-editor .link-row")].map(row => ({
+          label: row.querySelector(".label").value,
+          url: row.querySelector(".url").value,
+          icon: row.querySelector(".icon").value || "fas fa-link"
+        })).filter(l => l.label && l.url);
+
+        const newSettings = { name: finalName, avatar: finalAvatar, links };
+        localStorage.setItem("socialSettings", JSON.stringify(newSettings));
+        loadSettings();
+        alert("✨ Princess Settings Saved!");
+      }
     }
 
     function resetDefaults() {
+      if (currentUser.perms !== "admin") {
+        alert("Only admin can reset defaults.");
+        return;
+      }
       localStorage.setItem("socialSettings", JSON.stringify(defaultSettings));
       loadSettings();
       alert("🌈 Reset to Princess Defaults!");
     }
 
     function changePassword() {
+      if (currentUser.perms !== "admin") {
+        alert("Only admin can change password.");
+        return;
+      }
       const newPW = document.getElementById("newPassword").value.trim();
       if (newPW.length > 4) {
-        ADMIN_PASSWORD = newPW;
         localStorage.setItem("adminPW", newPW);
         alert("🔐 Password Changed!");
       } else {
@@ -262,7 +414,7 @@
     }
 
     function logout() {
-      localStorage.removeItem("adminPW");
+      sessionStorage.removeItem("loggedInUser");
       alert("👋 Logged out!");
       window.location.href = "index.html";
     }
@@ -272,7 +424,13 @@
       const manager = document.getElementById("user-manager");
       manager.innerHTML = "";
 
-      users.forEach((u, i) => {
+      const filteredUsers = users.filter(u => allowedPerms.includes(u.perms));
+
+      if (filteredUsers.length !== users.length) {
+        localStorage.setItem("users", JSON.stringify(filteredUsers));
+      }
+
+      filteredUsers.forEach((u, i) => {
         const row = document.createElement("div");
         row.className = "link-row";
         row.innerHTML = `
@@ -282,33 +440,91 @@
         `;
         manager.appendChild(row);
       });
+
+      updateRemoveButtons();
     }
 
     function addUser() {
+      if (currentUser.perms !== "admin") {
+        alert("Only admin can add users.");
+        return;
+      }
+
       const username = document.getElementById("newUsername").value.trim();
       const password = document.getElementById("newUserPassword").value.trim();
       const perms = document.getElementById("newUserPerms").value;
-      if (!username || !password) return alert("Username & password required");
+
+      if (!username || !password) {
+        alert("Username & password required");
+        return;
+      }
+
+      if (!allowedPerms.includes(perms)) {
+        alert("Invalid permission selected");
+        return;
+      }
 
       const users = JSON.parse(localStorage.getItem("users")) || [];
-      if (users.find(u => u.username === username)) return alert("Username already exists");
+      if (users.find(u => u.username === username)) {
+        alert("Username already exists");
+        return;
+      }
 
       users.push({ username, password, perms });
       localStorage.setItem("users", JSON.stringify(users));
       loadUsers();
+
       document.getElementById("newUsername").value = "";
       document.getElementById("newUserPassword").value = "";
-      alert("👤 User added");
+      alert("User added!");
     }
 
     function removeUser(index) {
+      if (currentUser.perms !== "admin") {
+        alert("Only admin can remove users.");
+        return;
+      }
       const users = JSON.parse(localStorage.getItem("users")) || [];
       users.splice(index, 1);
       localStorage.setItem("users", JSON.stringify(users));
       loadUsers();
     }
 
-    window.onload = loadSettings;
+    // Update preview when inputs change
+    function updatePreview() {
+      const nameInput = document.getElementById("adminName");
+      const avatarInput = document.getElementById("adminAvatar");
+
+      if (currentUser.perms === "admin") {
+        document.getElementById("displayName").textContent = nameInput.value || defaultSettings.name;
+        document.getElementById("avatar").src = avatarInput.value || defaultSettings.avatar;
+      }
+    }
+
+    // Update links preview on input change
+    function updateLinksPreview() {
+      const rows = document.querySelectorAll("#links-editor .link-row");
+      const linksContainer = document.getElementById("links-container");
+      const links = [];
+      rows.forEach(row => {
+        const label = row.querySelector(".label").value.trim();
+        const url = row.querySelector(".url").value.trim();
+        const icon = row.querySelector(".icon").value.trim() || "fas fa-link";
+        if (label && url) {
+          links.push({ label, url, icon });
+        }
+      });
+
+      linksContainer.innerHTML = links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer"><i class="${l.icon}"></i> ${l.label}</a>`).join("");
+    }
+
+    document.getElementById("adminName").addEventListener("input", () => { updatePreview(); });
+    document.getElementById("adminAvatar").addEventListener("input", () => { updatePreview(); });
+    document.getElementById("links-editor").addEventListener("input", () => { updateLinksPreview(); });
+
+    // Initial setup
+    setPermissions(currentUser.perms);
+    loadSettings();
   </script>
 </body>
 </html>

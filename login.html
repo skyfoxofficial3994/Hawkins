@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login - Princess Admin Panel</title>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to right, #91d1ff, #ff85b3, #d7aefb);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+  .login-container {
+    background: rgba(255 255 255 / 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 32px;
+    width: 320px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #ff85b3;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #91d1ff;
+    color: black;
+  }
+  .error {
+    color: #e11d48;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Admin Login 👑</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button onclick="login()">Login</button>
+    <div class="error" id="error"></div>
+  </div>
+
+<script>
+  function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorDiv = document.getElementById('error');
+    errorDiv.textContent = '';
+
+    if (!username || !password) {
+      errorDiv.textContent = 'Please enter username and password';
+      return;
+    }
+
+    // Get users from localStorage (same users you manage in admin panel)
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+      // Save login state (simple flag)
+      localStorage.setItem('loggedInUser', username);
+      window.location.href = 'admin.html';  // Change this to your actual admin page filename
+    } else {
+      errorDiv.textContent = 'Invalid username or password';
+    }
+  }
+
+  // If already logged in, redirect to admin panel
+  window.onload = () => {
+    if (localStorage.getItem('loggedInUser')) {
+      window.location.href = 'admin.html';
+    }
+  };
+</script>
+</body>
+</html>
