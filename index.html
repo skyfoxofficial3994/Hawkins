@@ -1,166 +1,69 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Linktree Admin</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <title>Linktree - lilyfirefox</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
-    :root {
-      --primary: #fc575e;
-      --secondary: #f7b42c;
-      --bg-light: #f9fafb;
-      --bg-dark: #121212;
-      --text-light: #1f2937;
-      --text-dark: #e5e7eb;
-      --glass: rgba(255, 255, 255, 0.1);
-    }
-    * {
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-    }
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background: linear-gradient(120deg, #f7b42c, #fc575e);
       min-height: 100vh;
+      font-family: 'Inter', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       padding: 40px 20px;
-      color: var(--text-light);
+      color: white;
     }
     .container {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
       padding: 24px;
       width: 100%;
       max-width: 400px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       margin: 16px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
     }
-    h2, h3 {
-      margin-top: 0;
-      font-weight: 600;
-    }
-    input[type="text"], input[type="url"], input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: none;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 16px;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: var(--secondary);
-      color: #000;
+    #avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid white;
+      margin-bottom: 12px;
     }
     .link-btn {
       display: block;
-      text-decoration: none;
+      background: linear-gradient(90deg, #fc575e, #f7b42c);
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 16px;
       color: white;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      padding: 12px;
-      border-radius: 12px;
-      margin: 8px 0;
+      text-decoration: none;
       font-weight: 600;
       text-align: center;
+      transition: transform 0.3s ease;
     }
-    .link-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 8px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .link-row input {
-      flex: 1 1 100%;
-    }
-    .remove-btn {
-      background: #e11d48;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-    }
-    #darkmode-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      padding: 10px 14px;
-      background: var(--primary);
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #darkmode-toggle:hover {
-      background: var(--secondary);
-      color: #000;
-    }
-    body.darkmode {
-      background: var(--bg-dark);
-      color: var(--text-dark);
-    }
-    body.darkmode .container {
-      background: rgba(40, 40, 40, 0.85);
-    }
-    body.darkmode .link-btn {
-      background: linear-gradient(90deg, #bb3750, #f7b42c);
-    }
-    body.darkmode button {
-      background: #bb3750;
-    }
-    body.darkmode button:hover {
-      background: #f7b42c;
-      color: black;
+    .link-btn:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-  <button id="darkmode-toggle">Dark Mode</button>
-  <div class="container" id="main-container">
-    <img id="avatar" src="" alt="Avatar" style="width:100px; border-radius:50%; border: 3px solid #fff; margin-bottom:12px;">
+  <div class="container">
+    <img id="avatar" src="" alt="Avatar">
     <h2 id="displayName"></h2>
     <div id="links-container"></div>
+    <a class="link-btn" href="admin.html"><i class="fas fa-user-cog"></i> Admin Panel</a>
   </div>
-
-  <div class="container" id="admin-login">
-    <h3>Admin Login</h3>
-    <input type="password" id="passwordInput" placeholder="Enter password" />
-    <button onclick="checkPassword()">Login</button>
-    <p id="loginStatus" style="color:#fca5a5;"></p>
-  </div>
-
-  <div class="container" id="admin-panel" style="display:none;">
-    <h3>Edit Profile</h3>
-    <input type="text" id="adminName" placeholder="Display Name" />
-    <input type="url" id="adminAvatar" placeholder="Avatar URL" />
-
-    <h3>Links</h3>
-    <div id="links-editor"></div>
-    <button onclick="addLink()">+ Add Link</button><br><br>
-    <button onclick="saveSettings()">Save Changes</button>
-  </div>
-
   <script>
-    const ADMIN_PASSWORD = "Flash230421#";
-    const defaultSettings = {
+    const settings = JSON.parse(localStorage.getItem("socialSettings")) || {
       name: "lilyfirefox Socials",
       avatar: "https://i.imgur.com/qfjJA5P.png",
       links: [
@@ -173,91 +76,11 @@
         { label: "Discord", url: "https://discord.gg/b2Zxbeu4Hc", icon: "fab fa-discord" }
       ]
     };
-
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem("socialSettings")) || defaultSettings;
-      document.getElementById("avatar").src = settings.avatar;
-      document.getElementById("displayName").textContent = settings.name;
-      const linksContainer = document.getElementById("links-container");
-      linksContainer.innerHTML = settings.links.map(link =>
-        `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i> ${link.label}</a>`
-      ).join("");
-      document.getElementById("adminName").value = settings.name;
-      document.getElementById("adminAvatar").value = settings.avatar;
-      const editor = document.getElementById("links-editor");
-      editor.innerHTML = "";
-      settings.links.forEach((link, i) => {
-        const row = document.createElement("div");
-        row.className = "link-row";
-        row.innerHTML = `
-          <input type="text" class="label" value="${link.label}" placeholder="Label" />
-          <input type="url" class="url" value="${link.url}" placeholder="URL" />
-          <input type="text" class="icon" value="${link.icon}" placeholder="Icon class" />
-          <button class="remove-btn" onclick="removeLink(${i})">Remove</button>
-        `;
-        editor.appendChild(row);
-      });
-    }
-    function addLink() {
-      const editor = document.getElementById("links-editor");
-      const index = editor.children.length;
-      const row = document.createElement("div");
-      row.className = "link-row";
-      row.innerHTML = `
-        <input type="text" class="label" placeholder="Label" />
-        <input type="url" class="url" placeholder="URL" />
-        <input type="text" class="icon" placeholder="Icon class" />
-        <button class="remove-btn" onclick="removeLink(${index})">Remove</button>
-      `;
-      editor.appendChild(row);
-    }
-    function removeLink(index) {
-      const editor = document.getElementById("links-editor");
-      if (editor.children[index]) {
-        editor.removeChild(editor.children[index]);
-      }
-    }
-    function saveSettings() {
-      const name = document.getElementById("adminName").value.trim();
-      const avatar = document.getElementById("adminAvatar").value.trim();
-      const editor = document.getElementById("links-editor");
-      const links = [...editor.children].map(row => {
-        return {
-          label: row.querySelector(".label").value,
-          url: row.querySelector(".url").value,
-          icon: row.querySelector(".icon").value || "fas fa-link"
-        };
-      }).filter(link => link.label && link.url);
-      const settings = { name, avatar, links };
-      localStorage.setItem("socialSettings", JSON.stringify(settings));
-      loadSettings();
-      alert("Settings saved!");
-    }
-    function checkPassword() {
-      const pw = document.getElementById("passwordInput").value;
-      if (pw === ADMIN_PASSWORD) {
-        document.getElementById("admin-login").style.display = "none";
-        document.getElementById("admin-panel").style.display = "block";
-      } else {
-        document.getElementById("loginStatus").textContent = "Incorrect password.";
-      }
-    }
-    const toggleBtn = document.getElementById("darkmode-toggle");
-    if (localStorage.getItem("darkMode") === "enabled") {
-      document.body.classList.add("darkmode");
-      toggleBtn.textContent = "Light Mode";
-    }
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("darkmode");
-      if (document.body.classList.contains("darkmode")) {
-        localStorage.setItem("darkMode", "enabled");
-        toggleBtn.textContent = "Light Mode";
-      } else {
-        localStorage.setItem("darkMode", "disabled");
-        toggleBtn.textContent = "Dark Mode";
-      }
-    });
-    window.onload = loadSettings;
+    document.getElementById("avatar").src = settings.avatar;
+    document.getElementById("displayName").textContent = settings.name;
+    document.getElementById("links-container").innerHTML = settings.links.map(link =>
+      `<a class="link-btn" href="${link.url}" target="_blank"><i class="${link.icon}"></i> ${link.label}</a>`
+    ).join("");
   </script>
 </body>
 </html>
