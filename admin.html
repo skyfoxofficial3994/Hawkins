@@ -152,6 +152,17 @@
     <button onclick="changePassword()">Change Password</button>
     <button onclick="logout()">Logout</button>
 
+    <h3>Manage Users</h3>
+    <div id="user-manager"></div>
+    <input type="text" id="newUsername" placeholder="Username" />
+    <input type="password" id="newUserPassword" placeholder="Password" />
+    <select id="newUserPerms">
+      <option value="viewer">Viewer</option>
+      <option value="editor">Editor</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button onclick="addUser()">+ Add User</button>
+
     <div class="preview">
       <h3>Live Preview</h3>
       <img id="avatar" src="" alt="Avatar" />
@@ -196,6 +207,8 @@
         `;
         editor.appendChild(row);
       });
+
+      loadUsers();
     }
 
     function addLink() {
@@ -252,6 +265,47 @@
       localStorage.removeItem("adminPW");
       alert("👋 Logged out!");
       window.location.href = "index.html";
+    }
+
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const manager = document.getElementById("user-manager");
+      manager.innerHTML = "";
+
+      users.forEach((u, i) => {
+        const row = document.createElement("div");
+        row.className = "link-row";
+        row.innerHTML = `
+          <strong>${u.username}</strong> — <em>${u.perms}</em>
+          <span style="flex: 1"></span>
+          <button class="remove-btn" onclick="removeUser(${i})">Remove</button>
+        `;
+        manager.appendChild(row);
+      });
+    }
+
+    function addUser() {
+      const username = document.getElementById("newUsername").value.trim();
+      const password = document.getElementById("newUserPassword").value.trim();
+      const perms = document.getElementById("newUserPerms").value;
+      if (!username || !password) return alert("Username & password required");
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      if (users.find(u => u.username === username)) return alert("Username already exists");
+
+      users.push({ username, password, perms });
+      localStorage.setItem("users", JSON.stringify(users));
+      loadUsers();
+      document.getElementById("newUsername").value = "";
+      document.getElementById("newUserPassword").value = "";
+      alert("👤 User added");
+    }
+
+    function removeUser(index) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      loadUsers();
     }
 
     window.onload = loadSettings;
